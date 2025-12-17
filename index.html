@@ -103,7 +103,31 @@
   const responses = [];
   let score = 0;
 
+  function hasAttemptedQuiz() {
+    return localStorage.getItem("ugc_net_quiz_attempted") === "true";
+  }
+
+  function markAttempted() {
+    localStorage.setItem("ugc_net_quiz_attempted", "true");
+  }
+
+  function blockQuiz() {
+    document.getElementById("quiz-content").innerHTML = `
+      <div class="signup-note">
+        ⚠️ <strong>You've already attempted this quiz.</strong><br><br>
+        📩 <a href="https://forms.gle/31GW5r6HhxDkEb5z5" target="_blank">Fill out this form to access more UGC NET quizzes</a><br><br>
+        Stay consistent with your preparation!
+      </div>
+    `;
+    document.getElementById("nextBtn").style.display = "none";
+  }
+
   function loadQuestion() {
+    if (hasAttemptedQuiz()) {
+      blockQuiz();
+      return;
+    }
+
     const q = questions[current];
     let html = `<div class="question">${current + 1}. ${q.q}</div>`;
     q.options.forEach(option => {
@@ -137,6 +161,7 @@
   }
 
   function showResult() {
+    markAttempted();
     document.getElementById("quiz-content").innerHTML = `
       <div class="signup-note">
         ✅ <strong>You’ve completed the quiz!</strong><br><br>
