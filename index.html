@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UGC NET Most Asked Questions</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f8fc;
+      padding: 30px;
+    }
+    .quiz-box {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+      padding: 25px;
+    }
+    h2 {
+      text-align: center;
+      color: #003366;
+      font-size: 22px;
+      margin-bottom: 25px;
+    }
+    .question {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .option {
+      background: #f0f4fa;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+    }
+    .option:hover {
+      background: #d9ecff;
+    }
+    .next-btn {
+      margin-top: 20px;
+      background-color: #003366;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      float: right;
+    }
+    .signup-note {
+      font-size: 16px;
+      text-align: center;
+      margin-top: 30px;
+      line-height: 1.8;
+      color: #444;
+    }
+    .signup-note a {
+      color: #0033cc;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<div class="quiz-box">
+  <h2>UGC NET MOST ASKED QUESTION</h2>
+  <div id="quiz-content"></div>
+  <button id="nextBtn" class="next-btn" onclick="nextQuestion()">Next</button>
+</div>
+
+<script>
+  const questions = [
+    {
+      q: "Which initiative of UGC aims to address the challenges of 'Digital Learning' in higher education?",
+      options: ["Swachh Bharat Abhiyan", "National Digital Library of India (NDLI)", "Digital India Programme", "IGNOU"],
+      correct: "National Digital Library of India (NDLI)"
+    },
+    {
+      q: "Who is the current acting Chairman of the UGC as of May 2025?",
+      options: ["Dr. Vineet Joshi", "Prof. M. Jagadesh Kumar", "Dr. Ramesh Pokhriyal", "Dr. Subhas Sarkar"],
+      correct: "Dr. Vineet Joshi"
+    },
+    {
+      q: "According to UGC 2018 regulations, which similarity percentage is Level 3 plagiarism?",
+      options: ["A and B only", "B, C and D only", "D and E only", "E only"],
+      correct: "D and E only"
+    },
+    {
+      q: "Who must certify a thesis is plagiarism-free?",
+      options: ["Only Student", "Only Supervisor", "Both Student and Supervisor", "None of the above"],
+      correct: "Both Student and Supervisor"
+    },
+    {
+      q: "Which committee recommended the Choice-Based Credit System (CBCS)?",
+      options: ["Justice Verma Committee", "Administrative Reform Committee", "Ramamurti Committee", "Chattopadhyay Committee"],
+      correct: "Administrative Reform Committee"
+    }
+  ];
+
+  let current = 0;
+  const responses = [];
+  let score = 0;
+
+  function loadQuestion() {
+    const q = questions[current];
+    let html = `<div class="question">${current + 1}. ${q.q}</div>`;
+    q.options.forEach(option => {
+      html += `<div class="option" onclick="selectOption(this)">${option}</div>`;
+    });
+    document.getElementById("quiz-content").innerHTML = html;
+    document.getElementById("nextBtn").style.display = "block";
+  }
+
+  function selectOption(el) {
+    const options = document.querySelectorAll(".option");
+    options.forEach(opt => opt.style.backgroundColor = "#f0f4fa");
+    el.style.backgroundColor = "#d0e9ff";
+    responses[current] = el.innerText;
+  }
+
+  function nextQuestion() {
+    if (responses[current]) {
+      if (responses[current] === questions[current].correct) {
+        score++;
+      }
+      current++;
+      if (current < questions.length) {
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    } else {
+      alert("Please select an option to proceed.");
+    }
+  }
+
+  function showResult() {
+    document.getElementById("quiz-content").innerHTML = `
+      <div class="signup-note">
+        ✅ <strong>You’ve completed the quiz!</strong><br><br>
+        🧠 <strong>Your Score: ${score} / ${questions.length}</strong><br><br>
+        📚 <strong>Want to practice more?</strong><br>
+        👉 <a href="https://forms.gle/31GW5r6HhxDkEb5z5" target="_blank">Click here for more UGC NET quizzes</a><br><br>
+        Your responses have been recorded. Keep learning and stay consistent!
+      </div>
+    `;
+    document.getElementById("nextBtn").style.display = "none";
+  }
+
+  window.onload = loadQuestion;
+</script>
+
+</body>
+</html>
