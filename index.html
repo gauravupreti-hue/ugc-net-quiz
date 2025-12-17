@@ -3,55 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <title>UGC NET Most Asked Questions</title>
-
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #f5f8fc;
       padding: 30px;
     }
-
     .quiz-box {
       max-width: 700px;
       margin: auto;
-      background: #ffffff;
+      background: #fff;
       border-radius: 10px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.15);
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
       padding: 25px;
     }
-
     h2 {
       text-align: center;
       color: #003366;
       margin-bottom: 25px;
     }
-
     .question {
       font-size: 18px;
-      font-weight: bold;
+      font-weight: 600;
       margin-bottom: 20px;
     }
-
     .option {
       background: #f0f4fa;
       padding: 12px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       border-radius: 6px;
       cursor: pointer;
       border: 1px solid #ccc;
     }
-
     .option:hover {
       background: #d9ecff;
     }
-
     .selected {
-      background: #cfe7ff;
+      background: #d0e9ff !important;
     }
-
     .next-btn {
       margin-top: 20px;
-      background: #003366;
+      background-color: #003366;
       color: white;
       padding: 10px 20px;
       border: none;
@@ -59,33 +51,27 @@
       cursor: pointer;
       float: right;
     }
-
-    .result-box {
+    .result {
       text-align: center;
-      font-size: 17px;
+      font-size: 18px;
       line-height: 1.8;
     }
-
-    .result-box a {
+    .result a {
       color: #0033cc;
       font-weight: bold;
       text-decoration: underline;
     }
   </style>
 </head>
-
 <body>
 
 <div class="quiz-box">
   <h2>UGC NET MOST ASKED QUESTION</h2>
   <div id="quiz-content"></div>
-  <button id="nextBtn" class="next-btn" onclick="nextQuestion()">Next</button>
+  <button class="next-btn" onclick="nextQuestion()">Next</button>
 </div>
 
 <script>
-  const FORM_LINK = "https://forms.gle/31GW5r6HhxDkEb5z5";
-  const STORAGE_KEY = "ugc_net_quiz_attempted";
-
   const questions = [
     {
       q: "Which initiative of UGC aims to address the challenges of Digital Learning in higher education?",
@@ -95,92 +81,80 @@
         "Digital India Programme",
         "IGNOU"
       ],
-      correct: "National Digital Library of India (NDLI)"
+      correctIndex: 1
     },
     {
-      q: "Who is the acting Chairman of UGC as of 2025?",
+      q: "Who is the acting Chairman of UGC as of May 2025?",
       options: [
         "Dr. Vineet Joshi",
-        "Prof. M. Jagadesh Kumar",
-        "Dr. Ramesh Pokhriyal",
-        "Dr. Subhas Sarkar"
+        "M. Jagadesh Kumar",
+        "Ramesh Pokhriyal",
+        "Subhas Sarkar"
       ],
-      correct: "Dr. Vineet Joshi"
+      correctIndex: 0
     },
     {
-      q: "Which similarity percentage comes under Level 3 plagiarism?",
+      q: "Which similarities fall under Level 3 plagiarism?",
       options: [
         "A and B only",
         "B, C and D only",
         "D and E only",
         "E only"
       ],
-      correct: "D and E only"
+      correctIndex: 2
     },
     {
-      q: "Who must certify a thesis is plagiarism-free?",
+      q: "Which statement is correct as per UGC Plagiarism Regulations?",
       options: [
-        "Only Student",
-        "Only Supervisor",
-        "Both Student and Supervisor",
-        "None"
+        "Both statements are true",
+        "Both statements are false",
+        "Statement I true, Statement II false",
+        "Statement I false, Statement II true"
       ],
-      correct: "Both Student and Supervisor"
+      correctIndex: 2
     },
     {
       q: "Which committee recommended CBCS?",
       options: [
+        "Administrative and Academic Reform Committee of UGC",
         "Justice Verma Committee",
-        "Administrative Reform Committee of UGC",
         "Ramamurti Committee",
         "Chattopadhyay Committee"
       ],
-      correct: "Administrative Reform Committee of UGC"
+      correctIndex: 0
     }
   ];
 
   let current = 0;
   let score = 0;
-  let selectedAnswer = null;
-
-  // 🔒 BLOCK MULTIPLE ATTEMPTS
-  window.onload = function () {
-    if (localStorage.getItem(STORAGE_KEY) === "true") {
-      alert("⚠️ You have already attempted this quiz.\n\nTo access more quizzes, please fill the next form.");
-      window.location.href = FORM_LINK;
-      return;
-    }
-    loadQuestion();
-  };
+  let selectedIndex = null;
 
   function loadQuestion() {
     const q = questions[current];
     let html = `<div class="question">${current + 1}. ${q.q}</div>`;
-
-    q.options.forEach(opt => {
-      html += `<div class="option" onclick="selectOption(this)">${opt}</div>`;
+    q.options.forEach((opt, index) => {
+      html += `<div class="option" onclick="selectOption(${index}, this)">${opt}</div>`;
     });
-
     document.getElementById("quiz-content").innerHTML = html;
   }
 
-  function selectOption(el) {
+  function selectOption(index, el) {
     document.querySelectorAll(".option").forEach(o => o.classList.remove("selected"));
     el.classList.add("selected");
-    selectedAnswer = el.innerText;
+    selectedIndex = index;
   }
 
   function nextQuestion() {
-    if (!selectedAnswer) {
-      alert("Please select an option.");
+    if (selectedIndex === null) {
+      alert("Please select an option");
       return;
     }
 
-    if (selectedAnswer === questions[current].correct) {
+    if (selectedIndex === questions[current].correctIndex) {
       score++;
     }
 
-    selectedAnswer = null;
+    selectedIndex = null;
     current++;
 
     if (current < questions.length) {
@@ -191,21 +165,21 @@
   }
 
   function showResult() {
-    localStorage.setItem(STORAGE_KEY, "true");
-
     document.getElementById("quiz-content").innerHTML = `
-      <div class="result-box">
-        ✅ <strong>Quiz Completed!</strong><br><br>
+      <div class="result">
+        ✅ <strong>You’ve completed the quiz!</strong><br><br>
         🧠 <strong>Your Score: ${score} / ${questions.length}</strong><br><br>
-        📚 Want more practice?<br>
-        👉 <a href="${FORM_LINK}" target="_blank">Click here for more UGC NET quizzes</a>
+        📚 <a href="https://forms.gle/31GW5r6HhxDkEb5z5" target="_blank">
+        Click here for more UGC NET quizzes</a>
       </div>
     `;
-
-    document.getElementById("nextBtn").style.display = "none";
+    document.querySelector(".next-btn").style.display = "none";
   }
+
+  loadQuestion();
 </script>
 
 </body>
 </html>
+
 
