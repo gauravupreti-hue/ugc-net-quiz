@@ -51,12 +51,14 @@
       cursor: pointer;
       float: right;
     }
-    .result {
+    .signup-note {
+      font-size: 16px;
       text-align: center;
-      font-size: 18px;
+      margin-top: 30px;
       line-height: 1.8;
+      color: #444;
     }
-    .result a {
+    .signup-note a {
       color: #0033cc;
       font-weight: bold;
       text-decoration: underline;
@@ -68,93 +70,112 @@
 <div class="quiz-box">
   <h2>UGC NET MOST ASKED QUESTION</h2>
   <div id="quiz-content"></div>
-  <button class="next-btn" onclick="nextQuestion()">Next</button>
+  <button id="nextBtn" class="next-btn" onclick="nextQuestion()">Next</button>
 </div>
 
 <script>
+  // const LOCK_KEY = "ugc_net_quiz_attempted"; // 🔒 LOCK DISABLED
+
   const questions = [
     {
-      q: "Which initiative of UGC aims to address the challenges of Digital Learning in higher education?",
+      q: "Which initiative of UGC aims to address the challenges of 'Digital Learning' in higher education?",
       options: [
         "Swachh Bharat Abhiyan",
         "National Digital Library of India (NDLI)",
         "Digital India Programme",
-        "IGNOU"
+        "Indira Gandhi National Open University (IGNOU)"
       ],
-      correctIndex: 1
+      correct: "National Digital Library of India (NDLI)"
     },
     {
-      q: "Who is the acting Chairman of UGC as of May 2025?",
+      q: "Who is the current acting Chairman of the University Grants Commission (UGC) as of May 2025?",
       options: [
         "Dr. Vineet Joshi",
-        "M. Jagadesh Kumar",
-        "Ramesh Pokhriyal",
-        "Subhas Sarkar"
+        "Professor Mamidala Jagadesh Kumar",
+        "Dr. M. Jagadesh Kumar",
+        "Dr. Ramesh Pokhriyal Nishank"
       ],
-      correctIndex: 0
+      correct: "Dr. Vineet Joshi"
     },
     {
-      q: "Which similarities fall under Level 3 plagiarism?",
+      q: "According to UGC Regulations 2018, which similarities constitute Level 3 plagiarism?",
       options: [
         "A and B only",
         "B, C and D only",
         "D and E only",
         "E only"
       ],
-      correctIndex: 2
+      correct: "D and E only"
     },
     {
-      q: "Which statement is correct as per UGC Plagiarism Regulations?",
+      q: "According to UGC Plagiarism Regulations 2018, which statement is correct?",
       options: [
-        "Both statements are true",
-        "Both statements are false",
-        "Statement I true, Statement II false",
-        "Statement I false, Statement II true"
+        "Both Statement I and Statement II are true",
+        "Both Statement I and Statement II are false",
+        "Statement I is true, but Statement II is false",
+        "Statement I is false, but Statement II is true"
       ],
-      correctIndex: 2
+      correct: "Statement I is true, but Statement II is false"
     },
     {
-      q: "Which committee recommended CBCS?",
+      q: "Which committee recommended the Choice-Based Credit System (CBCS) in higher education?",
       options: [
-        "Administrative and Academic Reform Committee of UGC",
-        "Justice Verma Committee",
-        "Ramamurti Committee",
-        "Chattopadhyay Committee"
+        "Administrative and Academic Reform Committee of the UGC",
+        "Justice Verma Commission on Teacher Education",
+        "Ramamurti Committee on Higher Education",
+        "Chattopadhyay Committee on Teacher Education"
       ],
-      correctIndex: 0
+      correct: "Administrative and Academic Reform Committee of the UGC"
     }
   ];
 
   let current = 0;
   let score = 0;
-  let selectedIndex = null;
+  let selected = null;
+
+  window.onload = function () {
+    // 🔒 LOCK REMOVED FOR TESTING
+    // if (localStorage.getItem(LOCK_KEY) === "true") {
+    //   document.getElementById("quiz-content").innerHTML = `
+    //     <div class="signup-note">
+    //       ⚠️ <strong>You’ve already attempted this quiz.</strong><br><br>
+    //       📚 <a href="https://forms.gle/31GW5r6HhxDkEb5z5" target="_blank">
+    //       Fill out this form to access more UGC NET quizzes</a><br><br>
+    //       Keep learning and stay consistent!
+    //     </div>
+    //   `;
+    //   document.getElementById("nextBtn").style.display = "none";
+    //   return;
+    // }
+    loadQuestion();
+  };
 
   function loadQuestion() {
     const q = questions[current];
     let html = `<div class="question">${current + 1}. ${q.q}</div>`;
-    q.options.forEach((opt, index) => {
-      html += `<div class="option" onclick="selectOption(${index}, this)">${opt}</div>`;
+    q.options.forEach(opt => {
+      html += `<div class="option" onclick="selectOption(this)">${opt}</div>`;
     });
     document.getElementById("quiz-content").innerHTML = html;
   }
 
-  function selectOption(index, el) {
+  function selectOption(el) {
     document.querySelectorAll(".option").forEach(o => o.classList.remove("selected"));
     el.classList.add("selected");
-    selectedIndex = index;
+    selected = el.innerText;
   }
 
   function nextQuestion() {
-    if (selectedIndex === null) {
-      alert("Please select an option");
+    if (!selected) {
+      alert("Please select an option.");
       return;
     }
 
-    if (selectedIndex === questions[current].correctIndex) {
+    if (selected === questions[current].correct) {
       score++;
     }
 
-    selectedIndex = null;
+    selected = null;
     current++;
 
     if (current < questions.length) {
@@ -165,22 +186,22 @@
   }
 
   function showResult() {
+    // localStorage.setItem(LOCK_KEY, "true"); // 🔒 DISABLED FOR TESTING
     document.getElementById("quiz-content").innerHTML = `
-      <div class="result">
+      <div class="signup-note">
         ✅ <strong>You’ve completed the quiz!</strong><br><br>
         🧠 <strong>Your Score: ${score} / ${questions.length}</strong><br><br>
         📚 <a href="https://forms.gle/31GW5r6HhxDkEb5z5" target="_blank">
         Click here for more UGC NET quizzes</a>
       </div>
     `;
-    document.querySelector(".next-btn").style.display = "none";
+    document.getElementById("nextBtn").style.display = "none";
   }
-
-  loadQuestion();
 </script>
 
 </body>
 </html>
+
 
 
 
